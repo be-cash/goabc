@@ -5,6 +5,7 @@
 package blockchain
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"math"
@@ -997,6 +998,9 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *bchutil.Block, vi
 	// OP_REVERSEBYTES.
 	phononActive := node.height > b.chainParams.PhononForkHeight
 
+	// If Axion hardfork is active we must enforce the new DAA and coinbase rule (if enabled).
+	axionActive := uint64(node.parent.CalcPastMedianTime().Unix()) >= b.chainParams.AxionActivationTime
+
 	// BIP0030 added a rule to prevent blocks which contain duplicate
 	// transactions that 'overwrite' older transactions which are not fully
 	// spent.  See the documentation for checkBIP0030 for more details.
@@ -1158,6 +1162,12 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *bchutil.Block, vi
 			totalSatoshiOut, expectedSatoshiOut)
 		return ruleError(ErrBadCoinbaseValue, str)
 	}
+	if axionActive {
+		err := checkCoinbaseMinerFund(transactions[0], expectedSatoshiOut)
+		if err != nil {
+			return err
+		}
+	}
 
 	// Don't run scripts if this node is before the latest known good
 	// checkpoint since the validity is verified via the checkpoints (all
@@ -1224,6 +1234,25 @@ func (b *BlockChain) checkConnectBlock(node *blockNode, block *bchutil.Block, vi
 	}
 
 	return nil
+}
+
+var minerFundOutputScript = []byte(
+	"\xa9\x14" +
+		"\x26\x06\x17\xeb\xf6\x68\xc9\x10\x2f\x71\xce\x24\xab\xa9\x7f\xca\xaf\x9c\x66\x6a" +
+		"\x87")
+
+func checkCoinbaseMinerFund(tx *bchutil.Tx, blockReward int64) error {
+	msgTx := tx.MsgTx()
+	required := blockReward * 8 / 100
+	for _, output := range msgTx.TxOut {
+		if output.Value < required {
+			continue
+		}
+		if bytes.Compare(output.PkScript, minerFundOutputScript) == 0 {
+			return nil
+		}
+	}
+	return ruleError(ErrMinerFund, "block does not pay miner fund")
 }
 
 // CheckConnectBlockTemplate fully validates that connecting the passed block to

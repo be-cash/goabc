@@ -223,6 +223,9 @@ const (
 	// ErrInvalidTxOrder indicates the order of the transactions in the block
 	// does not follow the active transaction ordering consensus rule.
 	ErrInvalidTxOrder
+
+	// ErrMinerFund indicates the block does not obey the coinbase rule.
+	ErrMinerFund
 )
 
 // Map of ErrorCode values back to their constant names for pretty printing.
