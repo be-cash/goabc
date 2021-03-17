@@ -1,17 +1,15 @@
-bchd
-====
-[![Build Status](https://travis-ci.org/gcash/bchd.png?branch=master)](https://travis-ci.org/gcash/bchd)
-[![Go Report Card](https://goreportcard.com/badge/github.com/gcash/bchd)](https://goreportcard.com/report/github.com/gcash/bchd)
+goabc
+=====
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
 [![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/gcash/bchd)
 
-bchd is an alternative full node bitcoin cash implementation written in Go (golang).
+goabc is an alternative full node [BCHA](https://www.bitcoinabc.org/bcha/) implementation written in Go (golang).
 
-This project is a port of the [btcd](https://github.com/btcsuite/btcd) codebase to Bitcoin Cash. It provides a high powered
+This project is a port of the [bchd](https://github.com/gcash/bchd) codebase to BCHA. It provides a high powered
 and reliable blockchain server which makes it a suitable backend to serve blockchain data to lite clients and block explorers
 or to power your local wallet.
 
-bchd does not include any wallet functionality by design as it makes the codebase more modular and easy to maintain. 
+gobch does not include any wallet functionality by design as it makes the codebase more modular and easy to maintain. 
 The [bchwallet](https://github.com/gcash/bchwallet) is a separate application that provides a secure Bitcoin Cash wallet 
 that communicates with your running bchd instance via the API.
 
@@ -46,7 +44,7 @@ If you prefer to install from source do the following:
 - Run the following commands to obtain bchd, all dependencies, and install it:
 
 ```bash
-go get github.com/gcash/bchd
+go get github.com/be-cash/goabc
 ```
 
 This will download the source code into your GOPATH and compile `bchd` and install it in your path.
@@ -55,8 +53,8 @@ For developers if you wish to place the working directory outside your GOPATH yo
 ```bash
 mkdir workspace
 cd workspace
-git clone https://github.com/gcash/bchd.git
-cd bchd
+git clone https://github.com/be-cash/goabc.git
+cd goabc
 go install (or build or run, etc)
 ```
 Dependencies will be automatically installed to `$GOPATH/pkg/mod`.
@@ -142,4 +140,4 @@ Josh Ellithorpe (quest@mac.com) - GPG Fingerprint: B6DE 3514 E07E 30BB 5F40  8D7
 
 ## License
 
-bchd is licensed under the [copyfree](http://copyfree.org) ISC License.
+goabc is licensed under the [copyfree](http://copyfree.org) ISC License.
